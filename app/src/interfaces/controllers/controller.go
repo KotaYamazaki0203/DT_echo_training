@@ -38,8 +38,8 @@ func (c Controller) Index(ctx echo.Context) error {
 	return ctx.Render(http.StatusOK, "article_list.html", articles)
 }
 
-func (c Controller) AllTodos(ctx echo.Context, sqlhandler *sqlhandler.SqlHandler) error {
-	todos, err := c.Interactor.GetUndeletedTodos(sqlhandler)
+func (c Controller) AllTodos(ctx echo.Context) error {
+	todos, err := c.Interactor.GetUndeletedTodos()
 	if err != nil {
 		log.Print(err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
@@ -48,14 +48,14 @@ func (c Controller) AllTodos(ctx echo.Context, sqlhandler *sqlhandler.SqlHandler
 	return ctx.Render(http.StatusOK, "all_todos.html", todos)
 }
 
-func (c Controller) Detail(ctx echo.Context, sqlhandler *sqlhandler.SqlHandler) error {
+func (c Controller) Detail(ctx echo.Context) error {
 	todoId, strconvErr := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
 	if strconvErr != nil {
 		log.Print(strconvErr)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
-	todo, err := c.Interactor.GetTodo(sqlhandler, todoId)
+	todo, err := c.Interactor.GetTodo(todoId)
 	if err != nil {
 		log.Print(err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
@@ -68,21 +68,21 @@ func (c Controller) NewTodo(ctx echo.Context) error {
 	return ctx.Render(http.StatusOK, "new_todo.html", nil)
 }
 
-func (c Controller) NewTodoSubmit(ctx echo.Context, sqlhandler *sqlhandler.SqlHandler) error {
+func (c Controller) NewTodoSubmit(ctx echo.Context) error {
 	title := ctx.FormValue("title")
 	content := ctx.FormValue("content")
-	c.Interactor.InsertNewTodo(sqlhandler, title, content)
+	c.Interactor.InsertNewTodo(title, content)
 	return ctx.Redirect(http.StatusFound, "/all_todos")
 }
 
-func (c Controller) EditTodo(ctx echo.Context, sqlhandler *sqlhandler.SqlHandler) error {
+func (c Controller) EditTodo(ctx echo.Context) error {
 	todoId, strconvErr := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
 	if strconvErr != nil {
 		log.Print(strconvErr)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
-	todo, err := c.Interactor.GetTodo(sqlhandler, todoId)
+	todo, err := c.Interactor.GetTodo(todoId)
 	if err != nil {
 		log.Print(err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
@@ -91,7 +91,7 @@ func (c Controller) EditTodo(ctx echo.Context, sqlhandler *sqlhandler.SqlHandler
 	return ctx.Render(http.StatusFound, "edit.html", todo)
 }
 
-func (c Controller) EditTodoSubmit(ctx echo.Context, sqlhandler *sqlhandler.SqlHandler) error {
+func (c Controller) EditTodoSubmit(ctx echo.Context) error {
 	todoId, strconvErr := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
 
 	if strconvErr != nil {
@@ -101,11 +101,11 @@ func (c Controller) EditTodoSubmit(ctx echo.Context, sqlhandler *sqlhandler.SqlH
 
 	title := ctx.FormValue("title")
 	content := ctx.FormValue("content")
-	c.Interactor.UpdateTodo(sqlhandler, todoId, title, content)
+	c.Interactor.UpdateTodo(todoId, title, content)
 	return ctx.Redirect(http.StatusFound, "/all_todos")
 }
 
-func (c Controller) DeleteTodo(ctx echo.Context, sqlhandler *sqlhandler.SqlHandler) error {
+func (c Controller) DeleteTodo(ctx echo.Context) error {
 	todoId, strconvErr := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
 
 	if strconvErr != nil {
@@ -113,7 +113,7 @@ func (c Controller) DeleteTodo(ctx echo.Context, sqlhandler *sqlhandler.SqlHandl
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
-	c.Interactor.DeleteTodo(sqlhandler, todoId)
+	c.Interactor.DeleteTodo(todoId)
 	return ctx.Redirect(http.StatusFound, "/all_todos")
 }
 

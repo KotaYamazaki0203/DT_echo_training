@@ -10,8 +10,7 @@ import (
 // このファイルにはリクエストのルーティング処理を実装する
 
 func SetRouting(e *echo.Echo) {
-	newSqlhandler := sqlhandler.NewSqlHandler()
-	controller := controllers.NewController(newSqlhandler)
+	controller := controllers.NewController(sqlhandler.NewSqlHandler())
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, Echo World!!")
@@ -22,11 +21,11 @@ func SetRouting(e *echo.Echo) {
 	})
 
 	e.GET("/detail", func(c echo.Context) error {
-		return controller.Detail(c, newSqlhandler)
+		return controller.Detail(c)
 	})
 
 	e.GET("/all_todos", func(c echo.Context) error {
-		return controller.AllTodos(c, newSqlhandler)
+		return controller.AllTodos(c)
 	})
 
 	e.GET("/new_todo", func(c echo.Context) error {
@@ -34,18 +33,18 @@ func SetRouting(e *echo.Echo) {
 	})
 
 	e.POST("/new_todo/submit", func(c echo.Context) error {
-		return controller.NewTodoSubmit(c, newSqlhandler)
+		return controller.NewTodoSubmit(c)
 	})
 
 	e.GET("/edit", func(c echo.Context) error {
-		return controller.EditTodo(c, newSqlhandler)
+		return controller.EditTodo(c)
 	})
 
 	e.POST("/edit/submit", func(c echo.Context) error {
-		return controller.EditTodoSubmit(c, newSqlhandler)
+		return controller.EditTodoSubmit(c)
 	})
 
 	e.GET("/delete_todo", func(c echo.Context) error {
-		return controller.DeleteTodo(c, newSqlhandler)
+		return controller.DeleteTodo(c)
 	})
 }
