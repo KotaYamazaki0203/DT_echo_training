@@ -39,9 +39,6 @@ func (r *Repository) GetTodo(sqlhandler *sqlhandler.SqlHandler, todoId uint) (co
 		return nil, err
 	}
 
-	//fmt.Println(convertedTodo.CreatedAt.Format("2006年01月02日15:04"))
-	//
-	//convertedTodo.CreatedAt = convertedTodo.CreatedAt.Format("2006年01月02日15:04")
 	return convertedTodo, nil
 }
 
