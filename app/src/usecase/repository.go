@@ -23,22 +23,12 @@ func (r *Repository) GetAllArticle() (articles []entities.Article, err error) {
 
 func (r *Repository) GetUndeletedTodos() (convertedTodos []entities.Todo, err error) {
 	todos := r.DB.Model(model.Todos{}).Find(&convertedTodos)
-
-	if todos.Error != nil {
-		return nil, err
-	}
-
-	return convertedTodos, nil
+	return convertedTodos, todos.Error
 }
 
 func (r *Repository) GetTodo(todoId uint) (convertedTodo *entities.Todo, err error) {
 	todo := r.DB.Model(model.Todos{}).First(&convertedTodo, todoId)
-
-	if todo.Error != nil {
-		return nil, err
-	}
-
-	return convertedTodo, nil
+	return convertedTodo, todo.Error
 }
 
 func (r *Repository) InsertNewTodo(title string, content string) {
