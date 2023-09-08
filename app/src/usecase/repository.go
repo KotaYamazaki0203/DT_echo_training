@@ -23,34 +23,42 @@ func (r *Repository) GetAllArticle() (articles []entities.Article, err error) {
 
 func (r *Repository) GetUndeletedTodos() (convertedTodos []entities.Todo, err error) {
 	todos := r.DB.Model(model.Todos{}).Find(&convertedTodos)
+
 	return convertedTodos, todos.Error
 }
 
 func (r *Repository) GetTodo(todoId uint) (convertedTodo *entities.Todo, err error) {
 	todo := r.DB.Model(model.Todos{}).First(&convertedTodo, todoId)
+
 	return convertedTodo, todo.Error
 }
 
-func (r *Repository) InsertNewTodo(title string, content string) {
+func (r *Repository) InsertNewTodo(title string, content string) error {
 	todo := model.Todos{
 		TITLE:   title,
 		CONTENT: content,
 	}
-	r.DB.Create(&todo)
+	result := r.DB.Create(&todo)
+
+	return result.Error
 }
 
-func (r *Repository) UpdateTodo(todoId uint, title string, content string) {
+func (r *Repository) UpdateTodo(todoId uint, title string, content string) error {
 	todo := model.Todos{
 		ID:      todoId,
 		TITLE:   title,
 		CONTENT: content,
 	}
-	r.DB.Updates(&todo)
+	result := r.DB.Updates(&todo)
+
+	return result.Error
 }
 
-func (r *Repository) DeleteTodo(todoId uint) {
+func (r *Repository) DeleteTodo(todoId uint) error {
 	todo := model.Todos{
 		ID: todoId,
 	}
-	r.DB.Delete(&todo)
+	result := r.DB.Delete(&todo)
+
+	return result.Error
 }

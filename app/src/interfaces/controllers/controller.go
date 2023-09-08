@@ -71,7 +71,12 @@ func (c Controller) NewTodo(ctx echo.Context) error {
 func (c Controller) NewTodoSubmit(ctx echo.Context) error {
 	title := ctx.FormValue("title")
 	content := ctx.FormValue("content")
-	c.Interactor.InsertNewTodo(title, content)
+	err := c.Interactor.InsertNewTodo(title, content)
+	if err != nil {
+		log.Print(err)
+		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
+	}
+
 	return ctx.Redirect(http.StatusFound, "/all_todos")
 }
 
@@ -101,19 +106,28 @@ func (c Controller) EditTodoSubmit(ctx echo.Context) error {
 
 	title := ctx.FormValue("title")
 	content := ctx.FormValue("content")
-	c.Interactor.UpdateTodo(todoId, title, content)
+	err := c.Interactor.UpdateTodo(todoId, title, content)
+	if err != nil {
+		log.Print(err)
+		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
+	}
+
 	return ctx.Redirect(http.StatusFound, "/all_todos")
 }
 
 func (c Controller) DeleteTodo(ctx echo.Context) error {
 	todoId, strconvErr := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
-
 	if strconvErr != nil {
 		log.Print(strconvErr)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
-	c.Interactor.DeleteTodo(todoId)
+	err := c.Interactor.DeleteTodo(todoId)
+	if err != nil {
+		log.Print(err)
+		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
+	}
+
 	return ctx.Redirect(http.StatusFound, "/all_todos")
 }
 

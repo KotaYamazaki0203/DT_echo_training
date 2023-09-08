@@ -23,14 +23,14 @@ func (i Interactor) GetTodo(todoId uint) (todo *entities.Todo, err error) {
 	return i.Repository.GetTodo(todoId)
 }
 
-func (i Interactor) InsertNewTodo(title string, content string) {
-	i.Repository.InsertNewTodo(title, content)
+func (i Interactor) InsertNewTodo(title string, content string) error {
+	return i.Repository.InsertNewTodo(title, content)
 }
 
-func (i Interactor) UpdateTodo(todoId uint, title string, content string) {
-	i.Repository.UpdateTodo(todoId, title, content)
+func (i Interactor) UpdateTodo(todoId uint, title string, content string) error {
+	return i.Repository.UpdateTodo(todoId, title, content)
 }
 
-func (i Interactor) DeleteTodo(todoId uint) {
-	i.Repository.DeleteTodo(todoId)
+func (i Interactor) DeleteTodo(todoId uint) error {
+	return i.Repository.DeleteTodo(todoId)
 }
