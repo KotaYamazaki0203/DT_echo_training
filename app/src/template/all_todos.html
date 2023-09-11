@@ -12,7 +12,7 @@
                 <tr>
                     <th>Title</th>
                     <th>Created At</th>
-                    <th>完了ボタン</th>
+                    <th>Done button</th>
                 </tr>
             </thead>
             {{ range .}}
@@ -22,13 +22,13 @@
                     </th>
                     <th>{{ .CreatedAt.Format "2006/01/02 15:04" }}</th>
                     <th>
-                        <a href="delete_todo?&todo_id={{ .ID }}">Delete ToDo</a>
+                        <a href="delete_todo?&todo_id={{ .ID }}">✅</a>
                     </th>
                 </tbody>
             {{ end }}
         </table>
         <div>
-            <a href="new_todo">新規作成画面</a>
+            <a href="new_todo">Create New ToDo</a>
         </div>
     </div>
 </body>
