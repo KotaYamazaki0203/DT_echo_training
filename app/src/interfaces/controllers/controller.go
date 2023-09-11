@@ -73,8 +73,8 @@ func (c Controller) NewTodoSubmit(ctx echo.Context) error {
 	title := ctx.FormValue("title")
 	content := ctx.FormValue("content")
 
-	validationResult := validation.TodoValidate(title, content)
-	if validationResult.Title != nil || validationResult.Content != nil {
+	validationError := validation.TodoValidate(title, content)
+	if validationError.Title != nil || validationError.Content != nil {
 		return ctx.Redirect(http.StatusFound, "/new_todo")
 	}
 
@@ -113,12 +113,12 @@ func (c Controller) EditTodoSubmit(ctx echo.Context) error {
 
 	title := ctx.FormValue("title")
 	content := ctx.FormValue("content")
-	validationResult := validation.TodoValidate(title, content)
-	if validationResult.Title != nil || validationResult.Content != nil {
+	validationError := validation.TodoValidate(title, content)
+	if validationError.Title != nil || validationError.Content != nil {
 		editTodoUrl := make([]byte, 0, 20)
 		editTodoUrl = append(editTodoUrl, "/edit?todo_id="...)
 		editTodoUrl = append(editTodoUrl, strconv.Itoa(int(todoId))...)
-		
+
 		return ctx.Redirect(http.StatusFound, string(editTodoUrl))
 	}
 
