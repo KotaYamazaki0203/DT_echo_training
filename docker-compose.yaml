@@ -17,7 +17,7 @@ services:
     depends_on:
       - mysql
     environment:
-      MYSQL_DATABASE: DeepTrack
+      MYSQL_DATABASE: deep_track
       MYSQL_HOST: mysql-container
       MYSQL_USER: root
       MYSQL_PASSWORD: deeptrack

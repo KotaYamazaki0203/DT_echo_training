@@ -1,13 +1,12 @@
 package sqlhandler
 
 import (
-	"fmt"
-	"log"
-	"os"
-
 	"app/src/model"
+	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"log"
+	"os"
 )
 
 type SqlHandler struct {
