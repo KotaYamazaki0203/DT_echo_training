@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"app/src/infrastructure/sqlhandler"
+	"app/src/interfaces/validation"
 	"app/src/usecase"
 	"github.com/labstack/echo/v4"
 	"log"
@@ -71,6 +72,12 @@ func (c Controller) NewTodo(ctx echo.Context) error {
 func (c Controller) NewTodoSubmit(ctx echo.Context) error {
 	title := ctx.FormValue("title")
 	content := ctx.FormValue("content")
+
+	validationResult := validation.TodoValidate(title, content)
+	if validationResult.Title != nil || validationResult.Content != nil {
+		return ctx.Redirect(http.StatusFound, "/new_todo")
+	}
+
 	err := c.Interactor.InsertNewTodo(title, content)
 	if err != nil {
 		log.Print(err)
@@ -106,6 +113,15 @@ func (c Controller) EditTodoSubmit(ctx echo.Context) error {
 
 	title := ctx.FormValue("title")
 	content := ctx.FormValue("content")
+	validationResult := validation.TodoValidate(title, content)
+	if validationResult.Title != nil || validationResult.Content != nil {
+		editTodoUrl := make([]byte, 0, 20)
+		editTodoUrl = append(editTodoUrl, "/edit?todo_id="...)
+		editTodoUrl = append(editTodoUrl, strconv.Itoa(int(todoId))...)
+		
+		return ctx.Redirect(http.StatusFound, string(editTodoUrl))
+	}
+
 	err := c.Interactor.UpdateTodo(todoId, title, content)
 	if err != nil {
 		log.Print(err)
