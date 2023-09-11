@@ -31,6 +31,7 @@ services:
       - ./mysql_docker/data:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=deeptrack
+      - TZ=Asia/Tokyo
     ports:
       - "3306:3306"
     container_name: mysql-container
