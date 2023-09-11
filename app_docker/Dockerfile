@@ -2,7 +2,9 @@
 FROM golang:1.18.10-alpine
 
 # ログに出力する時間をJSTにするため、タイムゾーンを設定
-ENV TZ /usr/share/zoneinfo/Asia/Tokyo
+RUN apk --no-cache add tzdata && \
+    cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
+    apk del tzdata
 
 RUN apk update && apk add git
 RUN go install github.com/cosmtrek/air@latest
