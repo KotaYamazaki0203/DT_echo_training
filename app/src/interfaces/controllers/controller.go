@@ -115,7 +115,9 @@ func (c Controller) EditTodoSubmit(ctx echo.Context) error {
 	content := ctx.FormValue("content")
 	validationError := validation.TodoValidate(title, content)
 	if validationError.Title != nil || validationError.Content != nil {
-		editTodoUrl := make([]byte, 0, 20)
+		const editTodoUrlLength = 0
+		const editTodoUrlCap = 20
+		editTodoUrl := make([]byte, editTodoUrlLength, editTodoUrlCap)
 		editTodoUrl = append(editTodoUrl, "/edit?todo_id="...)
 		editTodoUrl = append(editTodoUrl, strconv.Itoa(int(todoId))...)
 
