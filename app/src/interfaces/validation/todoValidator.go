@@ -1,8 +1,6 @@
 package validation
 
-import (
-	"github.com/go-ozzo/ozzo-validation"
-)
+import "github.com/go-ozzo/ozzo-validation"
 
 type TodoValidationResult struct {
 	Title   error
