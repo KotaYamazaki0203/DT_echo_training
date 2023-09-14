@@ -13,7 +13,7 @@ import (
 	"testing"
 )
 
-func TestNewTodoSubmit(t *testing.T) {
+func TestController_NewTodoSubmit(t *testing.T) {
 	e := echo.New()
 
 	// Connect to db for testing
