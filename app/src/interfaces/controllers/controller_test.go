@@ -45,54 +45,61 @@ func TestController_NewTodoSubmit(t *testing.T) {
 
 		foundTodo := []entities.Todo{}
 		result := testSqlHandler.DB.Find(&foundTodo)
-		if tt.title != "" && tt.content != "" {
-			if result.RowsAffected == 0 {
-				t.Errorf("Expect: todo is inserted. But todo is not inserted")
+		t.Run("valid title and valid content are submitted", func(t *testing.T) {
+			if tt.title != "" && tt.content != "" {
+				if result.RowsAffected == 0 {
+					t.Errorf("Expect: todo is inserted. But todo is not inserted")
+				}
+
+				for _, todo := range foundTodo {
+					if todo.Title != "test title" {
+						t.Errorf("Expect: inputted title is inserted but unexpected title is inserted")
+					}
+
+					if todo.Content != "test content" {
+						t.Errorf("Expect: inputted content is inserted but unexpected content is inserted")
+					}
+
+					if todo.CreatedAt.IsZero() != false {
+						t.Errorf("Expect: created_at is inserted but it is NULL")
+					}
+
+					if todo.UpdatedAt.IsZero() != false {
+						t.Errorf("Expect: updated_at is inserted but it is NULL")
+					}
+
+					if todo.DeletedAt.IsZero() != true {
+						t.Errorf("Expect: deleted_at is NULL but it is inserted")
+					}
+				}
+
+				assert.Equal(t, http.StatusFound, rec.Code)
+				assert.Equal(t, "/all_todos", rec.HeaderMap.Get("Location"))
 			}
+		})
 
-			for _, todo := range foundTodo {
-				if todo.Title != "test title" {
-					t.Errorf("Expect: inputted title is inserted but unexpected title is inserted")
+		t.Run("invalid title or invalid content is submitted", func(t *testing.T) {
+			if tt.title == "" || tt.content == "" {
+				if result.RowsAffected == 1 {
+					t.Errorf("Expect: todo is not inserted. But todo is inserted")
 				}
 
-				if todo.Content != "test content" {
-					t.Errorf("Expect: inputted content is inserted but unexpected content is inserted")
-				}
-
-				if todo.CreatedAt.IsZero() != false {
-					t.Errorf("Expect: created_at is inserted but it is NULL")
-				}
-
-				if todo.UpdatedAt.IsZero() != false {
-					t.Errorf("Expect: updated_at is inserted but it is NULL")
-				}
-
-				if todo.DeletedAt.IsZero() != true {
-					t.Errorf("Expect: deleted_at is NULL but it is inserted")
-				}
+				assert.Equal(t, http.StatusFound, rec.Code)
+				assert.Equal(t, "/new_todo", rec.HeaderMap.Get("Location"))
 			}
+		})
 
-			assert.Equal(t, http.StatusFound, rec.Code)
-			assert.Equal(t, "/all_todos", rec.HeaderMap.Get("Location"))
-		}
+		t.Run("invalid title and invalid content is submitted", func(t *testing.T) {
+			if tt.title == "" && tt.content == "" {
+				if result.RowsAffected == 1 {
+					t.Errorf("Expect: todo is not inserted. But todo is inserted")
+				}
 
-		if tt.title == "" || tt.content == "" {
-			if result.RowsAffected == 1 {
-				t.Errorf("Expect: todo is not inserted. But todo is inserted")
+				assert.Equal(t, http.StatusFound, rec.Code)
+				assert.Equal(t, "/new_todo", rec.HeaderMap.Get("Location"))
 			}
+		})
 
-			assert.Equal(t, http.StatusFound, rec.Code)
-			assert.Equal(t, "/new_todo", rec.HeaderMap.Get("Location"))
-		}
-
-		if tt.title == "" && tt.content == "" {
-			if result.RowsAffected == 1 {
-				t.Errorf("Expect: todo is not inserted. But todo is inserted")
-			}
-
-			assert.Equal(t, http.StatusFound, rec.Code)
-			assert.Equal(t, "/new_todo", rec.HeaderMap.Get("Location"))
-		}
 		testutil.TruncateTodoTable(*testSqlHandler)
 	}
 }
