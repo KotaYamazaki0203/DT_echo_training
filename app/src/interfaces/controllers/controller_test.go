@@ -45,8 +45,9 @@ func TestController_NewTodoSubmit(t *testing.T) {
 
 		foundTodo := []entities.Todo{}
 		result := testSqlHandler.DB.Find(&foundTodo)
-		t.Run("valid title and valid content are submitted", func(t *testing.T) {
-			if tt.title != "" && tt.content != "" {
+
+		if tt.title != "" && tt.content != "" {
+			t.Run("valid title and valid content are submitted", func(t *testing.T) {
 				if result.RowsAffected == 0 {
 					t.Errorf("Expect: todo is inserted. But todo is not inserted")
 				}
@@ -75,30 +76,30 @@ func TestController_NewTodoSubmit(t *testing.T) {
 
 				assert.Equal(t, http.StatusFound, rec.Code)
 				assert.Equal(t, "/all_todos", rec.HeaderMap.Get("Location"))
-			}
-		})
+			})
+		}
 
-		t.Run("invalid title or invalid content is submitted", func(t *testing.T) {
-			if tt.title == "" || tt.content == "" {
+		if tt.title == "" || tt.content == "" {
+			t.Run("invalid title or invalid content is submitted", func(t *testing.T) {
 				if result.RowsAffected == 1 {
 					t.Errorf("Expect: todo is not inserted. But todo is inserted")
 				}
 
 				assert.Equal(t, http.StatusFound, rec.Code)
 				assert.Equal(t, "/new_todo", rec.HeaderMap.Get("Location"))
-			}
-		})
+			})
+		}
 
-		t.Run("invalid title and invalid content is submitted", func(t *testing.T) {
-			if tt.title == "" && tt.content == "" {
+		if tt.title == "" && tt.content == "" {
+			t.Run("invalid title and invalid content is submitted", func(t *testing.T) {
 				if result.RowsAffected == 1 {
 					t.Errorf("Expect: todo is not inserted. But todo is inserted")
 				}
 
 				assert.Equal(t, http.StatusFound, rec.Code)
 				assert.Equal(t, "/new_todo", rec.HeaderMap.Get("Location"))
-			}
-		})
+			})
+		}
 
 		testutil.TruncateTodoTable(*testSqlHandler)
 	}
