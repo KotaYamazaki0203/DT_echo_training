@@ -9,6 +9,9 @@ RUN apk --no-cache add tzdata && \
 RUN apk update && apk add git
 RUN go install github.com/cosmtrek/air@latest
 
+# To execute test, install packages
+RUN apk add build-base
+
 ENV ROOT=/go/src/app
 WORKDIR ${ROOT}/src
 
