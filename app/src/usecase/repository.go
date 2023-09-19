@@ -35,8 +35,8 @@ func (r *Repository) GetTodo(todoId uint) (convertedTodo *entities.Todo, err err
 
 func (r *Repository) InsertNewTodo(title string, content string) error {
 	todo := model.Todos{
-		TITLE:   title,
-		CONTENT: content,
+		Title:   title,
+		Content: content,
 	}
 	result := r.DB.Create(&todo)
 
@@ -46,8 +46,8 @@ func (r *Repository) InsertNewTodo(title string, content string) error {
 func (r *Repository) UpdateTodo(todoId uint, title string, content string) error {
 	todo := model.Todos{
 		ID:      todoId,
-		TITLE:   title,
-		CONTENT: content,
+		Title:   title,
+		Content: content,
 	}
 	result := r.DB.Updates(&todo)
 
