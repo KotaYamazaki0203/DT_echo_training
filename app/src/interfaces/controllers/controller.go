@@ -15,6 +15,8 @@ type Controller struct {
 	Interactor usecase.Interactor
 }
 
+const genericErrorMessage = "An unexpected error occurred. Please try again later."
+
 /*
 このファイルには外部からのリクエストで受け取ったデータをusecaseで使えるように変形したり、
 内部からのデータを外部機能に向けて便利な形式に変換したりする
@@ -35,7 +37,9 @@ func (c Controller) Index(ctx echo.Context) error {
 	articles, err := c.Interactor.GetAllArticle()
 	if err != nil {
 		log.Printf("Error GetAllArticle method: %v", err)
-		return ctx.Render(500, "article_list.html", nil)
+		return ctx.Render(500, "article_list.html", map[string]interface{}{
+			"errorMessage": genericErrorMessage,
+		})
 	}
 	return ctx.Render(http.StatusOK, "article_list.html", articles)
 }
@@ -44,7 +48,9 @@ func (c Controller) AllTodos(ctx echo.Context) error {
 	todos, err := c.Interactor.GetUndeletedTodos()
 	if err != nil {
 		log.Printf("Error GetUndeletedTodos method: %v", err)
-		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
+		return ctx.Render(http.StatusInternalServerError, "500.html", map[string]interface{}{
+			"errorMessage": genericErrorMessage,
+		})
 	}
 
 	return ctx.Render(http.StatusOK, "all_todos.html", todos)
@@ -54,20 +60,26 @@ func (c Controller) Detail(ctx echo.Context) error {
 	todoId, err := utils.ConvertTodoIdToUint(ctx.QueryParam("todo_id"))
 	if err != nil {
 		log.Printf("Error converting todo_id to int64: %v", err)
-		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
+		return ctx.Render(http.StatusInternalServerError, "500.html", map[string]interface{}{
+			"errorMessage": genericErrorMessage,
+		})
 	}
 
 	todo, err := c.Interactor.GetTodo(todoId)
 	if err != nil {
 		log.Printf("Error GetTodo method: %v", err)
-		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
+		return ctx.Render(http.StatusInternalServerError, "500.html", map[string]interface{}{
+			"errorMessage": genericErrorMessage,
+		})
 	}
 
 	return ctx.Render(http.StatusOK, "detail.html", todo)
 }
 
 func (c Controller) NewTodo(ctx echo.Context) error {
-	return ctx.Render(http.StatusOK, "new_todo.html", nil)
+	return ctx.Render(http.StatusOK, "new_todo.html", map[string]interface{}{
+		"errorMessage": genericErrorMessage,
+	})
 }
 
 func (c Controller) NewTodoSubmit(ctx echo.Context) error {
@@ -82,7 +94,9 @@ func (c Controller) NewTodoSubmit(ctx echo.Context) error {
 	err := c.Interactor.InsertNewTodo(title, content)
 	if err != nil {
 		log.Printf("Error InsertNewTodo method: %v", err)
-		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
+		return ctx.Render(http.StatusInternalServerError, "500.html", map[string]interface{}{
+			"errorMessage": genericErrorMessage,
+		})
 	}
 
 	return ctx.Redirect(http.StatusFound, "/all_todos")
@@ -92,13 +106,17 @@ func (c Controller) EditTodo(ctx echo.Context) error {
 	todoId, err := utils.ConvertTodoIdToUint(ctx.QueryParam("todo_id"))
 	if err != nil {
 		log.Printf("Error converting todo_id to int64: %v", err)
-		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
+		return ctx.Render(http.StatusInternalServerError, "500.html", map[string]interface{}{
+			"errorMessage": genericErrorMessage,
+		})
 	}
 
 	todo, err := c.Interactor.GetTodo(todoId)
 	if err != nil {
 		log.Printf("Error GetTodo method: %v", err)
-		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
+		return ctx.Render(http.StatusInternalServerError, "500.html", map[string]interface{}{
+			"errorMessage": genericErrorMessage,
+		})
 	}
 
 	return ctx.Render(http.StatusFound, "edit.html", todo)
@@ -109,7 +127,9 @@ func (c Controller) EditTodoSubmit(ctx echo.Context) error {
 
 	if err != nil {
 		log.Printf("Error converting todo_id to int64: %v", err)
-		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
+		return ctx.Render(http.StatusInternalServerError, "500.html", map[string]interface{}{
+			"errorMessage": genericErrorMessage,
+		})
 	}
 
 	title := ctx.FormValue("title")
@@ -123,7 +143,9 @@ func (c Controller) EditTodoSubmit(ctx echo.Context) error {
 	err = c.Interactor.UpdateTodo(todoId, title, content)
 	if err != nil {
 		log.Printf("Error UpdateTodo method: %v", err)
-		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
+		return ctx.Render(http.StatusInternalServerError, "500.html", map[string]interface{}{
+			"errorMessage": genericErrorMessage,
+		})
 	}
 
 	return ctx.Redirect(http.StatusFound, "/all_todos")
@@ -133,13 +155,17 @@ func (c Controller) DeleteTodo(ctx echo.Context) error {
 	todoId, err := utils.ConvertTodoIdToUint(ctx.QueryParam("todo_id"))
 	if err != nil {
 		log.Printf("Error converting todo_id to int64: %v", err)
-		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
+		return ctx.Render(http.StatusInternalServerError, "500.html", map[string]interface{}{
+			"errorMessage": genericErrorMessage,
+		})
 	}
 
 	err = c.Interactor.DeleteTodo(todoId)
 	if err != nil {
 		log.Printf("Error DeleteTodo method: %v", err)
-		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
+		return ctx.Render(http.StatusInternalServerError, "500.html", map[string]interface{}{
+			"errorMessage": genericErrorMessage,
+		})
 	}
 
 	return ctx.Redirect(http.StatusFound, "/all_todos")
