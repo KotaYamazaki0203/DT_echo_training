@@ -33,7 +33,7 @@ func NewController(sqlhandler *sqlhandler.SqlHandler) *Controller {
 func (c Controller) Index(ctx echo.Context) error {
 	articles, err := c.Interactor.GetAllArticle()
 	if err != nil {
-		log.Print(err)
+		log.Printf("Error GetAllArticle method: %v", err)
 		return ctx.Render(500, "article_list.html", nil)
 	}
 	return ctx.Render(http.StatusOK, "article_list.html", articles)
@@ -42,7 +42,7 @@ func (c Controller) Index(ctx echo.Context) error {
 func (c Controller) AllTodos(ctx echo.Context) error {
 	todos, err := c.Interactor.GetUndeletedTodos()
 	if err != nil {
-		log.Print(err)
+		log.Printf("Error GetUndeletedTodos method: %v", err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
@@ -50,15 +50,15 @@ func (c Controller) AllTodos(ctx echo.Context) error {
 }
 
 func (c Controller) Detail(ctx echo.Context) error {
-	todoId, strconvErr := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
-	if strconvErr != nil {
-		log.Print(strconvErr)
+	todoId, err := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
+	if err != nil {
+		log.Printf("Error converting todo_id to int64: %v", err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
 	todo, err := c.Interactor.GetTodo(todoId)
 	if err != nil {
-		log.Print(err)
+		log.Printf("Error GetTodo method: %v", err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
@@ -80,7 +80,7 @@ func (c Controller) NewTodoSubmit(ctx echo.Context) error {
 
 	err := c.Interactor.InsertNewTodo(title, content)
 	if err != nil {
-		log.Print(err)
+		log.Printf("Error InsertNewTodo method: %v", err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
@@ -88,15 +88,15 @@ func (c Controller) NewTodoSubmit(ctx echo.Context) error {
 }
 
 func (c Controller) EditTodo(ctx echo.Context) error {
-	todoId, strconvErr := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
-	if strconvErr != nil {
-		log.Print(strconvErr)
+	todoId, err := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
+	if err != nil {
+		log.Printf("Error converting todo_id to int64: %v", err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
 	todo, err := c.Interactor.GetTodo(todoId)
 	if err != nil {
-		log.Print(err)
+		log.Printf("Error GetTodo method: %v", err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
@@ -104,10 +104,10 @@ func (c Controller) EditTodo(ctx echo.Context) error {
 }
 
 func (c Controller) EditTodoSubmit(ctx echo.Context) error {
-	todoId, strconvErr := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
+	todoId, err := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
 
-	if strconvErr != nil {
-		log.Print(strconvErr)
+	if err != nil {
+		log.Printf("Error converting todo_id to int64: %v", err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
@@ -124,9 +124,9 @@ func (c Controller) EditTodoSubmit(ctx echo.Context) error {
 		return ctx.Redirect(http.StatusFound, string(editTodoUrl))
 	}
 
-	err := c.Interactor.UpdateTodo(todoId, title, content)
+	err = c.Interactor.UpdateTodo(todoId, title, content)
 	if err != nil {
-		log.Print(err)
+		log.Printf("Error UpdateTodo method: %v", err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
@@ -134,15 +134,15 @@ func (c Controller) EditTodoSubmit(ctx echo.Context) error {
 }
 
 func (c Controller) DeleteTodo(ctx echo.Context) error {
-	todoId, strconvErr := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
-	if strconvErr != nil {
-		log.Print(strconvErr)
+	todoId, err := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
+	if err != nil {
+		log.Printf("Error converting todo_id to int64: %v", err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
-	err := c.Interactor.DeleteTodo(todoId)
+	err = c.Interactor.DeleteTodo(todoId)
 	if err != nil {
-		log.Print(err)
+		log.Printf("Error DeleteTodo method: %v", err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
 	}
 
