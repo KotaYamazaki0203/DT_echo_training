@@ -5,10 +5,10 @@ import (
 	"app/src/interfaces/validation"
 	"app/src/usecase"
 	"app/src/utils"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 type Controller struct {
@@ -116,13 +116,8 @@ func (c Controller) EditTodoSubmit(ctx echo.Context) error {
 	content := ctx.FormValue("content")
 	validationError := validation.TodoValidate(title, content)
 	if validationError.Title != nil || validationError.Content != nil {
-		const editTodoUrlLength = 0
-		const editTodoUrlCap = 20
-		editTodoUrl := make([]byte, editTodoUrlLength, editTodoUrlCap)
-		editTodoUrl = append(editTodoUrl, "/edit?todo_id="...)
-		editTodoUrl = append(editTodoUrl, strconv.Itoa(int(todoId))...)
-
-		return ctx.Redirect(http.StatusFound, string(editTodoUrl))
+		editTodoUrl := fmt.Sprintf("/edit?todo_id=%d", todoId)
+		return ctx.Redirect(http.StatusFound, editTodoUrl)
 	}
 
 	err = c.Interactor.UpdateTodo(todoId, title, content)
