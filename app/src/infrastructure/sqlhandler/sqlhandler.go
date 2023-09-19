@@ -1,12 +1,12 @@
 package sqlhandler
 
 import (
+	"app/src/model"
 	"fmt"
-	"log"
-	"os"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"log"
+	"os"
 )
 
 type SqlHandler struct {
@@ -25,5 +25,6 @@ func NewSqlHandler() *SqlHandler {
 		log.Fatalln(connection + "database can't connect")
 	}
 	sqlHandler.DB = DB
+	DB.AutoMigrate(model.Todos{})
 	return sqlHandler
 }

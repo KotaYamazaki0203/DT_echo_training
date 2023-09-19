@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail</title>
+</head>
+<body>
+<div>
+    <h1>Detail Page</h1>
+    <ul>
+        <li>Title: {{ .Title }}</li>
+        <li>Content: {{ .Content }}</li>
+        <li>Created At: {{ .CreatedAt.Format "2006/01/02 15:04" }}</li>
+        <li>Updated At: {{ .UpdatedAt.Format "2006/01/02 15:04" }}</li>
+    </ul>
+</div>
+<div>
+    <a href="edit?todo_id={{ .ID }}">Edit this ToDo</a>
+    <a href="all_todos">Back to List</a>
+</div>
+</body>
+</html>

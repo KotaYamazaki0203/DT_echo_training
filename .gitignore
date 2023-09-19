@@ -1,2 +1,4 @@
 .DS_Store
 .idea
+app/src/tmp/*
+mysql_docker/data/*

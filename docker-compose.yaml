@@ -17,7 +17,7 @@ services:
     depends_on:
       - mysql
     environment:
-      MYSQL_DATABASE: DeepTrack
+      MYSQL_DATABASE: deep_track
       MYSQL_HOST: mysql-container
       MYSQL_USER: root
       MYSQL_PASSWORD: deeptrack
@@ -31,6 +31,7 @@ services:
       - ./mysql_docker/data:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=deeptrack
+      - TZ=Asia/Tokyo
     ports:
       - "3306:3306"
     container_name: mysql-container
