@@ -4,6 +4,7 @@ import (
 	"app/src/infrastructure/sqlhandler"
 	"app/src/interfaces/validation"
 	"app/src/usecase"
+	"app/src/utils"
 	"github.com/labstack/echo/v4"
 	"log"
 	"net/http"
@@ -50,7 +51,7 @@ func (c Controller) AllTodos(ctx echo.Context) error {
 }
 
 func (c Controller) Detail(ctx echo.Context) error {
-	todoId, err := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
+	todoId, err := utils.ConvertTodoIdToUint(ctx.QueryParam("todo_id"))
 	if err != nil {
 		log.Printf("Error converting todo_id to int64: %v", err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
@@ -88,7 +89,7 @@ func (c Controller) NewTodoSubmit(ctx echo.Context) error {
 }
 
 func (c Controller) EditTodo(ctx echo.Context) error {
-	todoId, err := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
+	todoId, err := utils.ConvertTodoIdToUint(ctx.QueryParam("todo_id"))
 	if err != nil {
 		log.Printf("Error converting todo_id to int64: %v", err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
@@ -104,7 +105,7 @@ func (c Controller) EditTodo(ctx echo.Context) error {
 }
 
 func (c Controller) EditTodoSubmit(ctx echo.Context) error {
-	todoId, err := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
+	todoId, err := utils.ConvertTodoIdToUint(ctx.QueryParam("todo_id"))
 
 	if err != nil {
 		log.Printf("Error converting todo_id to int64: %v", err)
@@ -134,7 +135,7 @@ func (c Controller) EditTodoSubmit(ctx echo.Context) error {
 }
 
 func (c Controller) DeleteTodo(ctx echo.Context) error {
-	todoId, err := c.convertTodoIdToUint(ctx.QueryParam("todo_id"))
+	todoId, err := utils.ConvertTodoIdToUint(ctx.QueryParam("todo_id"))
 	if err != nil {
 		log.Printf("Error converting todo_id to int64: %v", err)
 		return ctx.Render(http.StatusInternalServerError, "500.html", nil)
@@ -147,9 +148,4 @@ func (c Controller) DeleteTodo(ctx echo.Context) error {
 	}
 
 	return ctx.Redirect(http.StatusFound, "/all_todos")
-}
-
-func (c Controller) convertTodoIdToUint(todoId string) (uint, error) {
-	id, strconvErr := strconv.ParseUint(todoId, 10, 64)
-	return uint(id), strconvErr
 }
